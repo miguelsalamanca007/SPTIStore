@@ -1,5 +1,6 @@
 package com.spti.shopping.controller;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,26 @@ public class ProductController{
     }
 
     @GetMapping("/productsByName/{name}")
-    public List<Product> getProductByName(@PathVariable String name){
-        return productServices.getProductByName(name);
+    public List<Product> getProductByName(@PathVariable String name) {
+        System.out.println("name in controller: " + name);
+
+        if (isValidName(name)) {
+            return productServices.getProductByName(name);
+        } else {
+            throw new InvalidParameterException("Invalid name parameter");
+        }
+    }
+
+    private boolean isValidName(String name) {
+        // Define una expresión regular que permita solo caracteres alfabéticos y espacios
+        String regex = "^[a-zA-Z\\s]+$";
+    
+        // Valida el parámetro 'name' utilizando la expresión regular
+        if (name.matches(regex)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
